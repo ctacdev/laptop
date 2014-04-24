@@ -95,25 +95,6 @@ fancy_echo "Starting Postgres ..."
   brew services start postgres
 ### end mac-components/start-services
 
-fancy_echo "Installing rbenv, to change Ruby versions ..."
-  brew install rbenv
-
-  if ! grep -qs "rbenv init" ~/.zshrc; then
-    printf 'export PATH="$HOME/.rbenv/bin:$PATH"\n' >> ~/.zshrc
-    printf 'eval "$(rbenv init - --no-rehash)"\n' >> ~/.zshrc
-
-    fancy_echo "Enable shims and autocompletion ..."
-      eval "$(rbenv init -)"
-  fi
-
-  export PATH="$HOME/.rbenv/bin:$PATH"
-
-fancy_echo "Installing rbenv-gem-rehash so the shell automatically picks up binaries after installing gems with binaries..."
-  brew install rbenv-gem-rehash
-
-fancy_echo "Installing ruby-build, to install Rubies ..."
-  brew install ruby-build
-### end mac-components/rbenv
 
 fancy_echo "Upgrading and linking OpenSSL ..."
   brew install openssl
@@ -122,18 +103,9 @@ fancy_echo "Upgrading and linking OpenSSL ..."
 ### end mac-components/compiler-and-libraries
 
 ruby_version="$(curl -sSL http://ruby.thoughtbot.com/latest)"
-
-fancy_echo "Installing Ruby $ruby_version ..."
-  if [ "$ruby_version" = "2.1.1" ]; then
-    curl -fsSL https://gist.github.com/mislav/a18b9d7f0dc5b9efc162.txt | rbenv install --patch 2.1.1
-  else
-    rbenv install "$ruby_version"
-  fi
-
-fancy_echo "Setting $ruby_version as global default Ruby ..."
-  rbenv global "$ruby_version"
-  rbenv rehash
-
+fancy_echo "Installing RVM and Ruby 2.0.0"
+    curl -sSL https://get.rvm.io | bash -s stable --ruby=2.0.0
+  
 fancy_echo "Updating to latest Rubygems version ..."
   gem update --system
 
