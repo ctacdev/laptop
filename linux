@@ -85,9 +85,6 @@ fancy_echo "Installing watch, to execute a program periodically and show the out
 fancy_echo "Installing curl ..."
   sudo aptitude install -y curl
 
-fancy_echo "Installing zsh ..."
-  sudo aptitude install -y zsh
-
 fancy_echo "Installing node, to render the rails asset pipeline ..."
   sudo aptitude install -y nodejs
 ### end linux-components/debian-derivative-packages
@@ -109,43 +106,9 @@ if ! command -v ag &>/dev/null; then
 fi
 ### end linux-components/silver-searcher-from-source
 
-if [[ ! -d "$HOME/.rbenv" ]]; then
-  fancy_echo "Installing rbenv, to change Ruby versions ..."
-    git clone git://github.com/sstephenson/rbenv.git ~/.rbenv
-
-    if ! grep -qs "rbenv init" ~/.zshrc; then
-      printf 'export PATH="$HOME/.rbenv/bin:$PATH"\n' >> ~/.zshrc
-      printf 'eval "$(rbenv init - --no-rehash)"\n' >> ~/.zshrc
-    fi
-
-    export PATH="$HOME/.rbenv/bin:$PATH"
-    eval "$(rbenv init -)"
-fi
-
-if [[ ! -d "$HOME/.rbenv/plugins/rbenv-gem-rehash" ]]; then
-  fancy_echo "Installing rbenv-gem-rehash so the shell automatically picks up binaries after installing gems with binaries..."
-    git clone https://github.com/sstephenson/rbenv-gem-rehash.git ~/.rbenv/plugins/rbenv-gem-rehash
-fi
-
-if [[ ! -d "$HOME/.rbenv/plugins/ruby-build" ]]; then
-  fancy_echo "Installing ruby-build, to install Rubies ..."
-    git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
-fi
-### end linux-components/rbenv
-
-ruby_version="$(curl -sSL http://ruby.thoughtbot.com/latest)"
-
-fancy_echo "Installing Ruby $ruby_version ..."
-  if [ "$ruby_version" = "2.1.1" ]; then
-    curl -fsSL https://gist.github.com/mislav/a18b9d7f0dc5b9efc162.txt | rbenv install --patch 2.1.1
-  else
-    rbenv install "$ruby_version"
-  fi
-
-fancy_echo "Setting $ruby_version as global default Ruby ..."
-  rbenv global "$ruby_version"
-  rbenv rehash
-
+fancy_echo "Installing RVM and Ruby 2.0.0"
+    curl -sSL https://get.rvm.io | bash -s stable --ruby=2.0.0
+  
 fancy_echo "Updating to latest Rubygems version ..."
   gem update --system
 
